@@ -68,6 +68,15 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 function App() {
+  const [todos, setTodos] = useState([]);
+  const addTodo = (InputText) =>{  
+    const newTodos= {
+    id: Date.now(),
+    text: InputText,
+    completed: false
+    }
+    setTodos(todos => [newTodos, ...todos])
+  }
   return (
     <>
     <Container maxWidth = "md">
@@ -93,6 +102,7 @@ function App() {
         </Toolbar>
       </AppBar>
     </Box>
+    <TodoAdd addTodo={addTodo}/>
     </Container>
     </>
   );
