@@ -68,7 +68,13 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 function App() {
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState(()=> {
+    const savedTodos = localStorage.getItem('todos');
+    return savedTodos ? JSON.parse(savedTodos):[];
+  });
+  React.useEffect(() => {
+    localStorage.setItem('todos', JSON.stringify(todos));
+  }, [todos]);
   const addTodo = (InputText) =>{  
     const newTodos= {
     id: Date.now(),
