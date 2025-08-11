@@ -127,6 +127,11 @@ function App() {
     </Box>
     <TodoAdd addTodo={addTodo}/>
     <TodoList todos={todos} toggleTodo={toggleTodo} deleteTodo={deleteTodo} editTodos={editTodos}/>
+    <Box sx={{display:'flex', justifyContent: 'center', marginTop: 10}}>
+      <Button color='error' size="medium" variant='contained' startIcon={<DeleteIcon/>} disabled={todos.length === 0}  onClick={() => setTodos([])}>
+            Clear All
+      </Button>
+    </Box>
     </Container>
     </>
   );
