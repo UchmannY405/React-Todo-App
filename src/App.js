@@ -83,6 +83,23 @@ function App() {
     }
     setTodos(todos => [newTodos, ...todos])
   }
+  const toggleTodo= (id) => {
+    setTodos(prev => 
+      prev.map(todos =>
+        todos.id ===id ? {...todos, completed: !todos.completed} : todos 
+      )
+    )
+  }
+  const deleteTodo = (id) => {
+    setTodos(prev => prev.filter(todos => todos.id !==id));
+  }
+
+  const editTodos = (id, newText) =>
+  {
+    setTodos(prev => prev.map(todos =>
+      todos.id === id ? {...todos, text: newText} : todos
+    ))
+  }
   return (
     <>
     <Container maxWidth = "md">
