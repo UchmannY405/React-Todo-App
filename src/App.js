@@ -126,6 +126,7 @@ function App() {
       </AppBar>
     </Box>
     <TodoAdd addTodo={addTodo}/>
+    <TodoList todos={todos} toggleTodo={toggleTodo} deleteTodo={deleteTodo} editTodos={editTodos}/>
     </Container>
     </>
   );
