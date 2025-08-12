@@ -72,9 +72,18 @@ function App() {
     const savedTodos = localStorage.getItem('todos');
     return savedTodos ? JSON.parse(savedTodos):[];
   });
+  const [status, setStatus] = React.useState(null);
+  const [openSortDialogue, setOpenSortDialogue] = React.useState(false);
   React.useEffect(() => {
     localStorage.setItem('todos', JSON.stringify(todos));
   }, [todos]);
+  const handleCloseSortDialogue = () => {
+    setOpenSortDialogue(false);
+  };
+
+  const handleOpenSortDialogue = () => {
+    setOpenSortDialogue(true);
+  };
   const addTodo = (InputText) =>{  
     const newTodos= {
     id: Date.now(),
@@ -100,13 +109,69 @@ function App() {
       todos.id === id ? {...todos, text: newText} : todos
     ))
   }
+  const filterBy = () => {
+    if (status===null)
+    {
+      return ''
+    }
+    else if (status==='complete')
+    {
+      return todos.filter(items => items.completed===true) 
+    }
+    else
+    {
+      return todos.filter(items => items.completed===false);
+    }
+    }
+  
+  
   return (
     <>
     <Container maxWidth = "md">
     <Box sx={{ flexGrow: 1, marginBottom:10, marginTop:2}}>
       <AppBar position="static">
         <Toolbar>
-          <Button color="inherit" startIcon={<FilterListIcon/>} onClick={handleOpen}>Sort</Button>
+          <Button color="inherit" startIcon={<FilterListIcon/>} onClick={handleOpenSortDialogue}>Sort</Button>
+          <Dialog
+          open={openSortDialogue}
+          onClose={handleCloseSortDialogue}
+        >
+          <DialogTitle>Todo Status</DialogTitle>
+          <DialogContent>
+          <FormControl>
+         <RadioGroup
+          aria-labelledby="demo-controlled-radio-buttons-group"
+          name="controlled-radio-buttons-group"
+          value={status}
+          onChange={(e) =>  setStatus(e.target.value)}
+        >
+          <FormControlLabel value="complete" control={<Radio />} label="Completed Todos" />
+          <FormControlLabel value="incomplete" control={<Radio />} label="InComplete Todos" />
+      </RadioGroup>
+    </FormControl>
+          </DialogContent>
+          <DialogContentText>
+          
+            <List>
+          {filterBy().length > 0 ? (
+          filterBy().map(todo => (
+            <ListItem key={todo.id}>
+              <ListItemText>
+                {todo.text}
+              </ListItemText>
+            </ListItem>
+          ))
+        ) : (
+          <ListItem>
+            <ListItemText>Please select a todo status</ListItemText>
+          </ListItem>
+        )}
+        </List>
+          </DialogContentText>
+          <DialogActions>
+            <Button onClick={handleCloseSortDialogue}>Cancel</Button>
+          </DialogActions>
+        </Dialog>
           <Typography variant="h6" align='center' component="div" sx={{ flexGrow: 1 }}>
             My Todo App
           </Typography>
