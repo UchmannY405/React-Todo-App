@@ -68,12 +68,17 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 function App() {
+
+  const [searchText, setSearchText] = useState('');
   const [todos, setTodos] = useState(()=> {
     const savedTodos = localStorage.getItem('todos');
     return savedTodos ? JSON.parse(savedTodos):[];
   });
   const [status, setStatus] = React.useState(null);
   const [openSortDialogue, setOpenSortDialogue] = React.useState(false);
+  const [openSearchDialogue, setOpenSearchDialogue] = useState(false);
+
+  
   React.useEffect(() => {
     localStorage.setItem('todos', JSON.stringify(todos));
   }, [todos]);
@@ -84,6 +89,15 @@ function App() {
   const handleOpenSortDialogue = () => {
     setOpenSortDialogue(true);
   };
+  
+  const handleCloseSearchDialogue = () => {
+    setOpenSearchDialogue(false);
+  };
+
+  const handleOpenSearchDialogue = () => {
+    setOpenSearchDialogue(true);
+  };
+
   const addTodo = (InputText) =>{  
     const newTodos= {
     id: Date.now(),
@@ -109,6 +123,26 @@ function App() {
       todos.id === id ? {...todos, text: newText} : todos
     ))
   }
+  const filteredTodos = () =>
+  {
+    return todos.filter(items => items.text.toLowerCase().includes(searchText.toLowerCase()));
+  };
+
+  const handleEnter = (e) =>
+  {
+    if (e.key==='Enter') 
+    {
+      e.preventDefault();
+        if (searchText.trim()==='')
+        {
+          alert('Please enter a todo')
+        }      
+        else 
+        {
+          handleOpenSearchDialogue();
+        }
+    }
+  };
   const filterBy = () => {
     if (status===null)
     {
@@ -187,6 +221,38 @@ function App() {
               onKeyDown={handleEnter}
             />
           </Search>
+          <Dialog
+        open={openSearchDialogue}
+        onClose={handleCloseSearchDialogue}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle>Search Results</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+          <List>
+          {filteredTodos().length > 0 ? (
+          filteredTodos().map(todo => (
+            <ListItem key={todo.id}>
+              <ListItemText>
+                Todo: {todo.text}
+                <br />
+                Status: {todo.completed ? 'Complete' : 'Incomplete'}
+              </ListItemText>
+            </ListItem>
+          ))
+        ) : (
+          <ListItem>
+            <ListItemText>No matching todos.</ListItemText>
+          </ListItem>
+        )}
+        </List>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseSearchDialogue}>Close</Button>
+        </DialogActions>
+      </Dialog>
         </Toolbar>
       </AppBar>
     </Box>
